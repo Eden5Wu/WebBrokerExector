@@ -1,6 +1,6 @@
 /*
  * Class for executing methods from the class hosted at the specified address/port
- * @param className The name of the class on the server methods will be invoked on
+ * @param actionName The name of the class on the server methods will be invoked on
  * @param connectionInfo a map of key/value pairs with required connection info. Currently supported properties are as follows:
  *       - "host" (host to connect to)
  *       - "port" (port on the host to connect on)
@@ -11,7 +11,7 @@
  * @param owner an optional parameter: another JavaScript object which owns this executor. This value will be passed 
  *         to the callback provided in the executeMethod call, if any.
  */
-function WebBrokerFunctionExecutor(className, connectionInfo, owner)
+function ServerActionExecutor(actionName, connectionInfo, owner)
 {
   this.connectionInfo = connectionInfo;
   //if host or port aren't given in the connectionInfo then they are taken from the current URL
@@ -21,7 +21,7 @@ function WebBrokerFunctionExecutor(className, connectionInfo, owner)
   this.restContext = getRestContext(connectionInfo); //should be empty string, or end with a '/'
   this.cacheContext = getCacheContext(connectionInfo); //must not be empty, defaults to 'cache/'
   this.isHttpS = getIsHTTPS(connectionInfo); //true or false
-  this.className = className;
+  this.actionName = actionName;
   
   //optional string which is a base64 encrypted user/password pair of format: "user:password"
   //(the pair itself, including the ':', must be encoded as a single string.)
@@ -93,13 +93,15 @@ function WebBrokerFunctionExecutor(className, connectionInfo, owner)
     }
     
     var portString = isValidPort(this.port) ? ":" + this.port : "";
-    
+    /*
     var dsAndRestSegments = "/" + this.dsContext;
     
     if (includeRest)
     {
       dsAndRestSegments += this.restContext;  
     }
+    */
+    var dsAndRestSegments = "/";
     
     var httpPrefix = this.isHttpS ? "https://" : "http://";
     
@@ -126,18 +128,85 @@ function WebBrokerFunctionExecutor(className, connectionInfo, owner)
     
     //optionally using the "pathPrefix" property which could be contributed through connectionInfo
     var portString = isValidPort(this.port) ? ":" + this.port : "";
-    var encodeClassName = (this.className=="") ? "" : encodeURIComponent(this.className) + "/";
-    var url = this.getURLPrefix() + encodeClassName + encodeURIComponent(methodName);
-
+    
+    var dsAndRestSegments = "/" + this.dsContext + this.restContext;
+    
+    //var url = this.getURLPrefix() + encodeURIComponent(this.className) + "/" + encodeURIComponent(methodName) + "/";
+    var url = this.getURLPrefix() + encodeURIComponent(this.actionName);
+                          
+    var paramArrayForSend = new Array();
     var paramToSend = null;
-    if (requestType == "GET" || requestType == "DELETE")
+
+    if(isArray(params))
     {
-      //url += encodeURIComponent(params) + "/";
-      url += "?" + params;
+      var arrLen = params.length;
+      for (x = 0; x < arrLen; x++) 
+      {
+      	var param = params[x];
+      	//If the parameter an array or object then this needs to be passed to the server through the request body
+      	//If a 'complex' parameter has already been found, all input parameters after it also need to be sent in the request body
+        //if ( (paramArrayForSend.length > 0) || ((isArray(param) || isObject(param)) && (requestType != "GET") && (requestType != "DELETE")))
+        if ( (requestType != "GET") && (requestType != "DELETE") )
+        {
+          paramArrayForSend[paramArrayForSend.length] = param;
+        }
+        else
+        {
+          //url += encodeURIComponent(param) + "/";
+          var hasParams = url.indexOf("?") > -1;
+          url += (hasParams ? "&" : "?");
+          url += encodeURIComponent(param);
+        }
+      }
     }
     else
     {
-      paramToSend = params;
+      if (requestType == "GET" || requestType == "DELETE")
+      {
+        //url += encodeURIComponent(params) + "/";
+          var hasParams = url.indexOf("?") > -1;
+          url += (hasParams ? "&" : "?");
+          url += encodeURIComponent(params);
+      }
+      else
+      {
+        paramArrayForSend[0] = params;
+      }
+    }
+    
+    //set the paramToSend based on if there is one or more than one parameter to send as the content of the request.
+    //A JSON Object with key '_parameters' is used when sending multiple parameters in the body.
+    if (paramArrayForSend.length > 0)
+    {
+      if (paramArrayForSend.length == 1) {
+        paramToSend = paramArrayForSend[0];
+      }
+      else {
+        paramToSend = {"_parameters":paramArrayForSend};
+      }
+    }
+    
+    //if request filters are specified, then add them to the URL
+    if (requestFilters != null)
+    {
+      var doneOne = false;
+      for (var key in requestFilters)
+      {
+        if (requestFilters.hasOwnProperty(key))
+        {
+          var propPrefix = doneOne ? "&" : "?";
+          doneOne = true;
+
+          var propVal = requestFilters[key];
+          
+          url += propPrefix + encodeURIComponent(key);
+          
+          if (propVal != null)
+          {
+            url += "=" + encodeURIComponent(propVal);
+          }
+        }
+      }
     }
     
     return [url, paramToSend];
