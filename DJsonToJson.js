@@ -45,7 +45,7 @@ let originalObj = {
 
 // 資料轉換器
 function covData( dsJSON ) {
-    let originalTable = dsJSON.table;
+    const originalTable = dsJSON.table;
     // 如果 原始資料表 有效
     if( !Array.isArray( originalTable ) ) {
         return [ { err: `原始資料表不是陣列格式！ (${typeof originalTable})` } ];
