@@ -1,3 +1,33 @@
+enum dbxSubDataTypes {
+  memoSubType     = 22, /* 8 bit char blob */
+  binarySubType   = 23,
+  wideMemoSubType = 32  /* Unicode blob */
+}
+
+enum dbxDataTypes {
+  unknownType    = 0,
+  ansistringType = 1,
+  dateType       = 2,
+  blobType       = 3,
+  booleanType    = 4,
+  int16Type      = 5,
+  int32Type      = 6,
+  doubleType     = 7,
+  bcdType        = 8,
+  bytesType      = 9,
+  timeType       = 10,
+  dateTimeType   = 11,
+  uint16Type     = 12,
+  uint32Type     = 13,
+  varBytesType   = 15,
+  int64Type      = 18,
+  uint64Type     = 19,
+  timeStampType  = 24,
+  wideStringType = 26
+}
+
+/* table format : FieldName, DataType, Ordinal, SubType, Scale, Size, Precision, ChildPoision, Nullable, Hidden, ParameterDirection, ValueParameter, Literal */
+
 let originalObj = {
   "table":[
     ["EmpNo",6,0,0,0,4,0,0,true,false,0,false,false],
