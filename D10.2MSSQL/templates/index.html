@@ -1,0 +1,37 @@
+﻿<!DOCTYPE HTML>
+
+<html>
+  <head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="./res/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="./res/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="./res/index.css">
+    <!--
+    <script type="text/javascript" src="easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="easyui/jquery.easyui.min.js"></script>
+    -->
+    <script>
+      const connectionInfo = {urlpath:"<#urlpath>",host:"<#host>",port:"<#port>"}
+    </script>
+    <script type="module" src="./res/index.js"></script>
+  </head>
+
+  <body class="easyui-layout">
+    <div data-options="region:'north',split:false,collapsible:false" style="height:100px;">
+      <div class="banner">
+        <div class="banner__content">
+          <div class="banner__text"><h1 id="banner_title"></h1></div>
+          <span class="banner__text banner__name" id="banner_user"></span>
+        </div>
+      </div>
+    </div>
+    <div data-options="region:'west',title:'West',split:true" style="width:200px;">
+        <ul id="mainTree" class="easyui-tree">
+        </ul>
+    </div>
+    <div data-options="region:'center',title:'center title'" style="background:#eee;">
+      <div id="tabs" class="easyui-tabs" fit="true"></div>
+    </div>
+  </body>
+</html>
+

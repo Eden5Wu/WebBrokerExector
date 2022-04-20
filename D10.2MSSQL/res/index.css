@@ -1,0 +1,38 @@
+html,
+body {
+  margin: 0;
+  font-family: "Noto Sans CJK TC", "Microsoft JhengHei", PingFang, STHeiti, sans-serif, serif;
+}
+.banner {
+  background: #2d3e50;
+  height: 97px;
+}
+
+.banner__content {
+  padding: 10px;
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.banner__text {
+  flex-grow: 1;
+  line-height: 1.4;
+}
+
+.banner__close {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.banner__text,
+.banner__close > span {
+  color: #ffffff;
+  direction: ltr;
+}
+
+.banner__name {
+  float:right;
+}

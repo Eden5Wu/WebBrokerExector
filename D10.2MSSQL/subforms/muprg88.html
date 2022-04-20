@@ -1,0 +1,55 @@
+﻿<!DOCTYPE HTML>
+
+<html>
+  <head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../res/easyui/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../res/easyui/themes/icon.css">
+    <style type="text/css">
+        .c-label{
+            display:inline-block;
+            width:100px;
+            font-weight:bold;
+        }
+    </style>
+    <script type="module" src="../res/muprg88.js"></script>
+  </head>
+
+  <body>
+    <table id="dg" style="width:700px;height:350px"
+                title="DataGrid - CardView" singleSelect="true" fitColumns="true" remoteSort="false"
+                url="/emp" pagination="true" sortOrder="desc" sortName="EMP_ID" toolbar="#toolbar">
+        <thead>
+            <tr>
+                <th field="EMP_ID" width="80" sortable="true">員工編號</th>
+                <th field="NAME" width="120" sortable="true">員工姓名</th>
+                <!--
+                <th field="unitcost" width="80" sortable="true">Unit Cost</th>
+                <th field="attr1" width="250" sortable="true">Attribute</th>
+                <th field="status" width="60" sortable="true">Status</th>
+                -->
+            </tr>
+        </thead>
+    </table>
+    <div id="toolbar">
+        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" id="btnAdd">新增</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" id="btnDestory">刪除</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-save" plain="true" id="btnSave">存檔</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-undo" plain="true" id="btnCancel">取消</a>
+    </div>
+
+    <div id="dlg" class="easyui-dialog" style="width:400px" data-options="closed:true,modal:true,border:'thin',buttons:'#dlg-buttons'">
+		<form id="fm" method="post" novalidate style="margin:0;padding:20px 50px">
+			<h3>Employee Information</h3>
+			<div style="margin-bottom:10px">
+				<input name="EMP_ID" class="easyui-textbox" required="true" label="員工編號:" style="width:100%">
+                <input name="NAME" class="easyui-textbox" required="true" label="員工姓名:" style="width:100%">
+			</div>
+		</form>
+	</div>
+	<div id="dlg-buttons">
+		<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="saveUser()" style="width:90px">Save</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')" style="width:90px">Cancel</a>
+	</div>
+  </body>
+</html>
